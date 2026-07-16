@@ -21,12 +21,30 @@
 </title>
 {{ end }}
 
+<!-- Fonts: preload the two faces used above the fold -->
+<link rel="preload" href="{{ "fonts/Inter-Regular.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/Inter-Bold.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+
 <!-- CSS -->
+{{/* the flag icons are only used by the translation links of multilingual sites */}}
+{{ if hugo.IsMultilingual }}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
     type="text/css">
+{{ end }}
 
 {{ $options := (dict "targetPath" "main.css" "outputStyle" "compressed" "enableSourceMap" true) }}
-{{ $style := resources.Get "scss/main.scss" | css.Sass $options | resources.Fingerprint }}
+{{ $style := resources.Get "scss/main.scss" | css.Sass $options }}
+{{/* stylesheets listed in the customCSSAssets site param (paths under the site's assets/ dir)
+     are minified and bundled with the theme CSS into a single request */}}
+{{ $bundle := slice $style }}
+{{ range $path := $.Site.Params.customCSSAssets }}
+    {{ with resources.Get $path }}
+        {{ $bundle = $bundle | append (. | resources.Minify) }}
+    {{ else }}
+        {{ errorf "customCSSAssets entry %q not found in assets/" $path }}
+    {{ end }}
+{{ end }}
+{{ $style = $bundle | resources.Concat "css/bundle.css" | resources.Fingerprint }}
 <link rel="stylesheet" href="{{ $style.RelPermalink }}">
 
 {{ range $val := $.Site.Params.customCSS }}
