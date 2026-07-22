@@ -3,6 +3,11 @@
 {{ $secureJS := slice $main $menu | resources.Concat "bundle.js" | resources.Minify | resources.Fingerprint "sha512" }}
 <script type="text/javascript" src="{{ $secureJS.RelPermalink }}" integrity="{{ $secureJS.Data.Integrity }}" defer></script>
 
+{{/* sidenotes + justif (TeX-style justification): the ES modules are bundled,
+     tree-shaken and minified by esbuild into a single self-hosted request */}}
+{{ $sidenote := resources.Get "js/sidenote.js" | js.Build (dict "minify" true "format" "iife" "target" "es2020") | resources.Fingerprint "sha512" }}
+<script type="text/javascript" src="{{ $sidenote.RelPermalink }}" integrity="{{ $sidenote.Data.Integrity }}" defer></script>
+
 {{ range $val := $.Site.Params.customJS }}
     {{ if gt (len $val) 0 }}
         <script src="{{ $val }}"></script>
