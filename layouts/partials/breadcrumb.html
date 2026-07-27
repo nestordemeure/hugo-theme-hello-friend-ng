@@ -1,0 +1,19 @@
+{{/* Trail of ancestor sections, outermost first, so a page nested deep in a
+     multi-chapter work (e.g. one chapter of a translation) can climb back out.
+     The home page is dropped: the logo already links there. Pages sitting
+     directly under the site root get an empty trail and render nothing. */}}
+{{- $trail := slice -}}
+{{- range .Ancestors.Reverse -}}
+    {{- if not .IsHome -}}
+        {{- $trail = $trail | append . -}}
+    {{- end -}}
+{{- end -}}
+{{- with $trail }}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+        {{- range . }}
+        <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+        {{- end }}
+    </ol>
+</nav>
+{{- end }}

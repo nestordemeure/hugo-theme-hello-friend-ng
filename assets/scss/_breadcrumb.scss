@@ -1,0 +1,43 @@
+/* Trail of ancestor sections shown above the title of a page (see
+   partials/breadcrumb.html). Deliberately quiet: it is a way back out of a
+   deeply nested page, not a second navigation bar competing with the title. */
+.breadcrumb {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0 0 0.6em;
+  @include dimmed;
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* inline (not flex) so a long trail wraps like a sentence on narrow screens */
+  li {
+    display: inline;
+
+    &::after {
+      content: "/";
+      margin: 0 0.45em;
+      opacity: 0.6;
+    }
+
+    &:last-child::after {
+      content: none;
+    }
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      border-bottom: 1px solid;
+    }
+  }
+
+  /* the immediate parent is the likeliest target, so give it a little weight */
+  li:last-child a {
+    font-weight: 600;
+  }
+}
