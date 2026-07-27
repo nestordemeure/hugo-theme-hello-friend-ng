@@ -17,14 +17,12 @@
   li {
     display: inline;
 
+    /* every crumb gets a trailing slash, the last one included: a one-item
+       trail reads as "Writing /" rather than as a stray bare word */
     &::after {
       content: "/";
       margin: 0 0.45em;
       opacity: 0.6;
-    }
-
-    &:last-child::after {
-      content: none;
     }
   }
 
